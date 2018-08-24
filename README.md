@@ -5,7 +5,7 @@ Computer vision and NLP to identify age, race, and gender in photographs
 
 This Python + R toolkit requires a Python 3.6 virtual environment with the `cv2`, `dlib`, `numpy`, `keras`, and `tensorflow` modules, as well as the R packages `tidyverse`, `gender`, `plyr`, and `jsonlite` packages. The virtualenv included in this repository shows the barebones file structures for the virtualenv, but does not include the actual `.so` files, as they exceed the github size limit.
 
-## Useage
+## Usage
 
 The input data should be in the form of a compressed streaming json file returned from the Twitter API. The `download_data.R` file will identify all the user profile images from the API results and download every image to the `img` folder. When run in order, the `age-gender-image.py`, `process_results.R`, and `calc_gender_age.R`, scripts will return a CSV in the `results` folder that contains the twitter handle and associated estimated age and gender.
 
