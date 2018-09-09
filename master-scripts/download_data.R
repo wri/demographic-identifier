@@ -1,26 +1,70 @@
-library(json)
+files <- list.files("stream_03", pattern = "[.]gz")
+files <- paste0("stream_03/", files)
 
-files <- list.files("master-scripts/stream_01", pattern = "[.]gz")
-files <- paste0("master-scripts/stream_01/", files)
 read_in_file <- function(file) {
   z <- gzfile(file)
   l <- jsonlite::flatten(jsonlite::stream_in(z))
+  Sys.sleep(1)
   return(l)
 }
 
-all_files <- lapply(files, read_in_file)
-#all_files <- lapply(all_files, as.data.frame)
-library(plyr)
-all_files <- rbind.fill(all_files)
-
-images <- all_files$user.profile_image_url_https
-images <- gsub("_normal", "", images)
-destfiles <- seq(1, length(images), 1)
-destfiles <- paste0(destfiles, ".jpg")
-
-download.file(images[2], method="curl", destfile = "image1.jpg")
-
-for(i in c(1:length(images))) {
-  Sys.sleep(0.1)
-  download.file(images[i], method="curl", destfile = destfiles[i])
+finished_files <- read.table("finished_files.txt", col.names = F, as.is=T)
+colnames(finished_files) <- c("file")
+files <- files[!files %in%  finished_files$file]
+if(length(files) > 0) {
+  all_files <- lapply(files, read_in_file)
+  all_files <- plyr::rbind.fill(all_files)
 }
+
+cat("Reading in data \n")
+prior <- readRDS("all_files.RDS")
+if(length(files) > 0) {
+  original_cols <- colnames(all_files)
+  to_keep <- which(colnames(prior) %in% original_cols)
+  print(to_keep)
+  prior <- prior[,to_keep]
+  all_files <- rbind(prior, all_files)
+  saveRDS(all_files, "all_files.RDS")
+  
+  files <- list.files("stream_03", pattern = "[.]gz")
+  files <- paste0("stream_03/", files)
+  write.table(files, "finished_files.txt", row.names = F, col.names = F, quote = F)
+} else {
+  all_files <- prior
+  rm(prior)
+}
+
+cat("Calculating image names \n")
+images <- all_files$user.profile_image_url_https
+names <- all_files$user.screen_name
+image_names <- data.frame(images = images, names = names)
+image_names$images <- gsub("_normal", "", image_names$images)
+image_names$destfiles <- seq(1, length(images), 1)
+image_names$type <- gsub(".*\\.", "", image_names$images)
+image_names$destfiles <- paste0(image_names$destfiles, ".", tolower(image_names$type))
+image_names <- image_names[!duplicated(image_names$images),]
+image_names <- image_names[image_names$type %in% c("jpg", "jpeg", "png", "bmp"),]
+write.csv(image_names, "../results/image_names.csv")
+
+download_files <- function(start, end) {
+  #pb <- txtProgressBar(min = 0, max = end, initial = start, style = 3)
+  for(i in c(start:end)) {
+    print(i)
+    #setTxtProgressBar(pb, i)
+    Sys.sleep(sample(seq(0.1,0.50,0.01), 1))
+    download.file(image_names$images[i], method="curl", destfile = paste0("../img/", image_names$destfiles[i]), quiet = T)
+  }
+}
+
+cat("Calculating where to start downloading \n")
+
+downloaded <- list.files("../img")
+downloaded_number <- as.numeric(gsub("[.][A-z]{1,}", "", downloaded))
+
+downloaded_urls <- image_names$images[image_names$destfiles %in% downloaded]
+write.table(downloaded_urls, "../results/downloaded_urls.txt", row.names=F, col.names =F, quote = F )
+to_start <- which(image_names$destfiles == downloaded[which.max(downloaded_number)]) + 1
+
+
+cat("downloading 20,000 images \n")
+download_files(to_start, to_start + 20000)

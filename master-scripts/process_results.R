@@ -9,7 +9,7 @@ results$age <- gsub("\\[|\\]", "", results$age)
 results$gender <- gsub("\\[|\\]", "", results$gender)
 results$n <- str_count(results$age, "\\s+") + 1 
 results$n[is.na(results$n)] <- 1
-results <- cbind(results, names)
+#results <- cbind(results, names)
 df.expanded <- results[rep(row.names(results), results$n),]
 df.expanded$n <- 1
 
@@ -31,7 +31,8 @@ for(i in c(1:nrow(df.expanded))) {
   }
 }
 
-df.expanded <- df.expanded[,-c(3,5)]
+df.expanded <- df.expanded[,-c(4,5)]
+colnames(df.expanded) <- c("age", "gender", "name")
 df.expanded$gender <- gsub("\\s+", " ", df.expanded$gender)
 df.expanded$gender <- gsub("^ | $", "", df.expanded$gender)
 df.expanded <- df.expanded %>% separate(gender, c("female", "male"), sep = " ")
