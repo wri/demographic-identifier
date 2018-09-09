@@ -20,5 +20,6 @@ weights.28-3.73.hdf5
 *.jpeg
 *.bmp
 *.RDS
+*.png
 *.csv
 *virtualenv/*
