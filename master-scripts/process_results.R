@@ -1,6 +1,7 @@
 #! /usr/bin/Rscript
 
 library(tidyverse)
+cat("Reading in data \n")
 names <- read.csv("../results/names.csv", header = F)
 colnames(names) <- c("name")
 results <- read.csv("../results/results.csv", header=F)
@@ -10,6 +11,7 @@ results$gender <- gsub("\\[|\\]", "", results$gender)
 results$n <- str_count(results$age, "\\s+") + 1 
 results$n[is.na(results$n)] <- 1
 #results <- cbind(results, names)
+cat("Separating individuals in images \n")
 df.expanded <- results[rep(row.names(results), results$n),]
 df.expanded$n <- 1
 
@@ -23,6 +25,7 @@ for(i in c(2:nrow(df.expanded))) {
   }
 }
 
+cat("Separating age and gender of duplicates \n")
 df.expanded$age <- unlist(df.expanded$age)
 for(i in c(1:nrow(df.expanded))) {
   if(!is.na(df.expanded$n[i])) {
@@ -31,6 +34,7 @@ for(i in c(1:nrow(df.expanded))) {
   }
 }
 
+cat("Formatting results \n")
 df.expanded <- df.expanded[,-c(4,5)]
 colnames(df.expanded) <- c("age", "gender", "name")
 df.expanded$gender <- gsub("\\s+", " ", df.expanded$gender)
@@ -40,4 +44,5 @@ df.expanded[,c(1:3)] <- lapply(df.expanded[,c(1:3)], as.numeric)
 df.expanded[,c(1:3)] <- lapply(df.expanded[,c(1:3)], function(x) round(x, 2))
 df.expanded$age <- round(df.expanded$age, 0)
 
+cat("Writing results \n")
 write.csv(df.expanded, "../results/results_full.csv")

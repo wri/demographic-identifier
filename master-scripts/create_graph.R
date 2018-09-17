@@ -1,5 +1,5 @@
 library(tidyverse)
-figdata <- read.csv("output-wiki-pred-race.csv")
+figdata <- read.csv("master-scripts/output-wiki-pred-race.csv")
 figdata$race <- as.character(figdata$race)
 figdata$race[figdata$race == "GreaterEuropean,WestEuropean,Hispanic"] <- "Latino"
 figdata$race[figdata$race %in% c("Asian,GreaterEastAsian,Japanese",
@@ -36,8 +36,9 @@ figdata <- figdata %>%
   as.data.frame()
 
 figdata$n <- as.numeric(figdata$n)
+figdata <- figdata[!is.na(figdata$race),]
 
-ggplot(data=figdata, aes(x=age, y=n, fill=pred_gender))+
+p1 <- ggplot(data=figdata, aes(x=age, y=n, fill=pred_gender))+
   geom_col(stat="identity", data=figdata[figdata$pred_gender=="female",], width=1)+
   geom_col(stat="identity", data=figdata[figdata$pred_gender=="male",], aes(y=n*-1), width=1)+
   coord_flip()+
