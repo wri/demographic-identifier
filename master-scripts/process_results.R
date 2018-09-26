@@ -1,10 +1,11 @@
 #! /usr/bin/Rscript
 
 library(tidyverse)
+
+stream = "stream_05/"
+
 cat("Reading in data \n")
-names <- read.csv("../results/names.csv", header = F)
-colnames(names) <- c("name")
-results <- read.csv("../results/results.csv", header=F)
+results <- read.csv(paste0("../results/", stream, "results.csv"), header=F)
 colnames(results) <- c("age", "gender")
 results$age <- gsub("\\[|\\]", "", results$age)
 results$gender <- gsub("\\[|\\]", "", results$gender)
@@ -45,4 +46,4 @@ df.expanded[,c(1:3)] <- lapply(df.expanded[,c(1:3)], function(x) round(x, 2))
 df.expanded$age <- round(df.expanded$age, 0)
 
 cat("Writing results \n")
-write.csv(df.expanded, "../results/results_full.csv")
+write.csv(df.expanded, paste0("../results/", stream, "results_full.csv"))

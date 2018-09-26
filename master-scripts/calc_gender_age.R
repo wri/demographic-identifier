@@ -1,37 +1,40 @@
 library(gender)
+
+stream <- "stream_05"
+
 suppressMessages(library(tidyverse))
-results <- read.csv("../results/results_full.csv")
-results$name <- gsub("[.]{1,}/img/", "", results$name)
+results <- read.csv(paste0("../results/", stream, "/results_full.csv"))
+results$name <- gsub("[.]{1,}/img_[0-9]{1,}/", "", results$name)
 results$name <- as.numeric(gsub("[.]jpg", "", results$name))
-files <- list.files("stream_03", pattern = "[.]gz")
-files <- paste0("stream_03/", files)
+files <- list.files(stream, pattern = "[.]gz")
+files <- paste0(stream, "/", files)
 read_in_file <- function(file) {
   z <- gzfile(file)
   l <- jsonlite::flatten(jsonlite::stream_in(z))
   return(l)
 }
 
-finished_files <- read.table("finished_files.txt", col.names = F, as.is=T)
-colnames(finished_files) <- c("file")
-files <- files[!files %in%  finished_files$file]
+#finished_files <- read.table("finished_files.txt", col.names = F, as.is=T)
+#colnames(finished_files) <- c("file")
+#files <- files[!files %in%  finished_files$file]
 if(length(files) > 0) {
   all_files <- lapply(files, read_in_file)
   all_files <- plyr::rbind.fill(all_files)
 }
 
-cat("Reading in data \n")
-prior <- readRDS("all_files.RDS")
+#cat("Reading in data \n")
+#prior <- readRDS("all_files.RDS")
 if(length(files) > 0) {
   original_cols <- colnames(all_files)
-  to_keep <- which(colnames(prior) %in% original_cols)
-  print(to_keep)
-  prior <- prior[,to_keep]
-  all_files <- rbind(prior, all_files)
-  saveRDS(all_files, "all_files.RDS")
+  #to_keep <- which(colnames(prior) %in% original_cols)
+  #print(to_keep)
+  #prior <- prior[,to_keep]
+  #all_files <- rbind(prior, all_files)
+  saveRDS(all_files, paste0("../results/", stream, "/all_files.RDS"))
   
-  files <- list.files("stream_03", pattern = "[.]gz")
-  files <- paste0("stream_03/", files)
-  write.table(files, "finished_files.txt", row.names = F, col.names = F, quote = F)
+  files <- list.files(stream, pattern = "[.]gz")
+  files <- paste0(stream, "/", files)
+  write.table(files, paste0("../results/", stream, "/finished_files.txt", row.names = F, col.names = F, quote = F))
 } else {
   all_files <- prior
   rm(prior)
@@ -107,4 +110,4 @@ output$first.name <- as.character(output$first.name)
 output$first.name[output$first.name == ""] <- NA
 
 valid_names <- gender(output$first.name)[,1]
-write.csv(output, "../results/results_gender_age.csv",row.names = F)
+write.csv(output, paste0("../results/", stream, "/results_gender_age.csv"),row.names = F)

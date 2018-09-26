@@ -1,4 +1,4 @@
-stream = "stream_02"
+stream = "stream_05"
 
 
 files <- list.files(stream, pattern = "[.]gz")
@@ -34,9 +34,7 @@ if(file.exists("all_files.RDS")) {
 }
 if(length(files) > 0) {
   original_cols <- colnames(all_files)
-  
-  print(to_keep)
-  if(exists(prior)) {
+  if(exists("prior")) {
     to_keep <- which(colnames(prior) %in% original_cols)
     prior <- prior[,to_keep]
     all_files <- rbind(prior, all_files)
@@ -61,12 +59,13 @@ image_names$type <- gsub(".*\\.", "", image_names$images)
 image_names$destfiles <- paste0(image_names$destfiles, ".", tolower(image_names$type))
 image_names <- image_names[!duplicated(image_names$images),]
 image_names <- image_names[image_names$type %in% c("jpg", "jpeg", "png", "bmp"),]
-write.csv(image_names, paste0("../results/", stream, "/image_names.csv")
-
-download_files <- function(start, end) {
+write.csv(image_names, paste0("../results/", stream, "/image_names.csv"))
+#image_names <- read.csv("image_names.csv")
+download_files <- function(ids) {
   #pb <- txtProgressBar(min = 0, max = end, initial = start, style = 3)
-  for(i in c(start:end)) {
+  for(i in ids) {
     print(i)
+    print(image_names$images[i])
     #setTxtProgressBar(pb, i)
     Sys.sleep(sample(seq(0.1,0.50,0.01), 1))
     download.file(image_names$images[i], method="curl", destfile = paste0("../img/", image_names$destfiles[i]), quiet = T)
@@ -75,13 +74,18 @@ download_files <- function(start, end) {
 
 cat("Calculating where to start downloading \n")
 
-downloaded <- list.files("../img")
+downloaded <- list.files("../img/")
 downloaded_number <- as.numeric(gsub("[.][A-z]{1,}", "", downloaded))
 
-downloaded_urls <- image_names$images[image_names$destfiles %in% downloaded]
-write.table(downloaded_urls, paste0("../results/", stream, "/downloaded_urls.txt", row.names=F, col.names =F, quote = F )
-to_start <- which(image_names$destfiles == downloaded[which.max(downloaded_number)]) + 1
+to_download <- which(!image_names$destfiles %in% downloaded)
+length_to_download <- length(to_download)
+#write.table(downloaded_urls, paste0("../results/", stream, "/downloaded_urls.txt", #row.names=F, col.names =F, quote = F))
+#to_start <- which(image_names$destfiles == downloaded[which.max(downloaded_number)]) + 1
 
 
-cat("downloading 5,000 images \n")
-download_files(to_start+1, to_start+5000)
+cat("Downloading", length_to_download, "images \n")
+if(identical(to_download, numeric(0))) {
+  #rm(to_start)
+  to_download <- image_names$images
+}
+download_files(to_download)
