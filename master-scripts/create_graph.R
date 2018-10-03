@@ -30,7 +30,7 @@ means <- figdata %>%
         panel.grid.major.y=element_blank())
 '''
 
-figdata <- figdata %>%
+figdata <- all_data %>%
   dplyr::group_by(age, pred_gender, race) %>%
   dplyr::summarise(n=n())%>%
   as.data.frame()
