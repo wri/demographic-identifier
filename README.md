@@ -9,7 +9,7 @@ This Python + R toolkit requires a Python 3.6 virtual environment with the `cv2`
 
 The input data should be in the form of a compressed streaming json file returned from the Twitter API. The `download_data.R` file will identify all the user profile images from the API results and download every image to the `img` folder. When run in order, the `age-gender-image.py`, `process_results.R`, and `calc_gender_age.R`, scripts will return a CSV in the `results` folder that contains the twitter handle and associated estimated age and gender.
 
-NB: the `age-gender-image` script is currently missing (due to transferring to a new computer and conflicting .gitignore).
+NB: the `age-gender-image` script is currently missing (due to transferring to a new computer and conflicting .gitignore). The `age-gender-image` script in the repo right now has been recreated from memory and has not been tested just yet! But it should work.
 
 Ethnicity is estimated using the Python package [ethnicolr](https://github.com/appeler/ethnicolr) which uses character-level RNN to predict race from first and last name. After install, ethnicity can be estimated using the following bash script
 
