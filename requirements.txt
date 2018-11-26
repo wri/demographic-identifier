@@ -4,3 +4,4 @@ tensorflow
 cv2
 dlib
 contextlib
+ethnicolr
