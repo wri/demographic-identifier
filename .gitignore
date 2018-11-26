@@ -17,3 +17,8 @@ weights.28-3.73.hdf5
 *.exe
 *.sav
 *.dat
+*.jpeg
+*.bmp
+*.RDS
+*.png
+*.h5
