@@ -1,0 +1,68 @@
+---
+title: "text-cleaning"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+filtered <- readRDS("2018_filtered.rds")
+
+detect_language <- function(n) {
+  lang <- cld2::detect_language(as.character(n))
+  return(lang)
+}
+```
+
+``
+
+
+```{r}
+for(i in c(1:nrow(filtered))) {
+  if(!is.na(filtered$extended_tweet.full_text[i])) {
+    filtered$text[i] <- filtered$extended_tweet.full_text[i]
+  }
+}
+```
+
+
+```{r}
+library(stringr)
+unclean_tweet <- filtered$text
+
+clean_tweet = gsub("&amp", "", unclean_tweet)
+clean_tweet = gsub("@\\w+", "", clean_tweet)
+clean_tweet = gsub("[[:punct:]]", "", clean_tweet)
+clean_tweet = gsub("[[:digit:]]", "", clean_tweet)
+clean_tweet = gsub("http\\w+", "", clean_tweet)
+clean_tweet = gsub("[ \t]{2,}", "", clean_tweet)
+clean_tweet = gsub("^\\s+|\\s+$", "", clean_tweet)
+
+ #get rid of unnecessary spaces
+clean_tweet <- str_replace_all(clean_tweet," "," ")
+# Get rid of URLs
+#clean_tweet <- str_replace_all(clean_tweet, "http\\:\\/\\/t.co/[a-z,A-Z,0-9]*{8}","")
+# Take out retweet header, there is only one
+clean_tweet <- str_replace(clean_tweet,"RT @[a-z,A-Z]*: ","")
+# Get rid of hashtags
+clean_tweet <- str_replace_all(clean_tweet,"#[a-z,A-Z]*","")
+# Get rid of references to other screennames
+clean_tweet <- str_replace_all(clean_tweet,"@[a-z,A-Z]*","") 
+clean_tweet <- gsub("(RT|via)((?:\\b\\W*@\\w+)+)", "", clean_tweet)
+clean_tweet <- gsub("RT", "", clean_tweet)
+clean_tweet <- gsub("\n", " ", clean_tweet)
+filtered$clean <- clean_tweet
+```
+
+
+
+```{r}
+filtered$langs <- unlist(lapply(filtered$clean, detect_language))
+
+# Keep english, german, french, spanish
+length(filtered$langs[filtered$langs %in% c("de", "en", "fr", "es")])/nrow(filtered)
+```
