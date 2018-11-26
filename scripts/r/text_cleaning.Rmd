@@ -80,4 +80,12 @@ library(tidyverse)
 joined <- left_join(filtered, dem, by.x="user.screen_name", by.y="screen.name")
 joined <- joined[!duplicated(joined$text),]
 joined <- joined[,-c(24:37)]
+write.csv(joined, "../../data/processed/pre-embeddings.csv")
 ```
+
+```{r}
+english <- tolower(joined$clean[joined$langs == "en"])
+
+write.table(english, quote = F, col.names = F, row.names = F, file = "../../data/muse/en/tweets_en.txt")
+```
+

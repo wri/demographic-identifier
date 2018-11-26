@@ -24,3 +24,5 @@ weights.28-3.73.hdf5
 .DS_Store
 **/._.DS_Store
 *.vec
+sent_embeddings.txt
+data/processed/sent_embeddings.txt
