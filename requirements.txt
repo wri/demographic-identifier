@@ -1,0 +1,12 @@
+keras
+numpy
+tensorflow
+cv2
+dlib
+contextlib
+ethnicolr
+scipy
+pandas
+tqdm
+tables
+h5py

@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## R Markdown
 
 ```{r}
-filtered <- readRDS("2018_filtered.rds")
+filtered <- readRDS("../../data/processed/2018_filtered.rds")
 
 detect_language <- function(n) {
   lang <- cld2::detect_language(as.character(n))
@@ -65,4 +65,19 @@ filtered$langs <- unlist(lapply(filtered$clean, detect_language))
 
 # Keep english, german, french, spanish
 length(filtered$langs[filtered$langs %in% c("de", "en", "fr", "es")])/nrow(filtered)
+```
+
+
+### Join with demographic data
+
+```{r}
+dem <- read.csv("../../data/processed/merged_age_gender_race.csv")
+dem$screen.name <- as.character(dem$screen.name)
+```
+
+```{r}
+library(tidyverse)
+joined <- left_join(filtered, dem, by.x="user.screen_name", by.y="screen.name")
+joined <- joined[!duplicated(joined$text),]
+joined <- joined[,-c(24:37)]
 ```
