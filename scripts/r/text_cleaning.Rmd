@@ -37,10 +37,10 @@ unclean_tweet <- filtered$text
 clean_tweet = gsub("&amp", "", unclean_tweet)
 clean_tweet = gsub("@\\w+", "", clean_tweet)
 clean_tweet = gsub("[[:punct:]]", "", clean_tweet)
-clean_tweet = gsub("[[:digit:]]", "", clean_tweet)
+clean_tweet = gsub("[0-9]", " ", clean_tweet)
 clean_tweet = gsub("http\\w+", "", clean_tweet)
-clean_tweet = gsub("[ \t]{2,}", "", clean_tweet)
 clean_tweet = gsub("^\\s+|\\s+$", "", clean_tweet)
+clean_tweet = gsub("\\s+{2,}", " ", clean_tweet)
 
  #get rid of unnecessary spaces
 clean_tweet <- str_replace_all(clean_tweet," "," ")
@@ -55,6 +55,7 @@ clean_tweet <- str_replace_all(clean_tweet,"@[a-z,A-Z]*","")
 clean_tweet <- gsub("(RT|via)((?:\\b\\W*@\\w+)+)", "", clean_tweet)
 clean_tweet <- gsub("RT", "", clean_tweet)
 clean_tweet <- gsub("\n", " ", clean_tweet)
+clean_tweet <- gsub("([a-z]{1,})([A-Z]{1})", "\\1 \\2", clean_tweet, perl=T)
 filtered$clean <- clean_tweet
 ```
 
@@ -84,8 +85,202 @@ write.csv(joined, "../../data/processed/pre-embeddings.csv")
 ```
 
 ```{r}
-english <- tolower(joined$clean[joined$langs == "en"])
+check_bad <- function(id, in_dict, df) {
+    setTxtProgressBar(pb, id)
+    sentence <- tolower(df[id])
+    bad_words <- unlist(hunspell::hunspell_find(sentence,
+      dict = hunspell::dictionary(in_dict)))
+    return(bad_words)
+  }
 
+  # Use the hunspell package to automatically fix mispelled words
+  check_spelling <- function(id, df) {
+    setTxtProgressBar(pb, id)
+    sentence <- tolower(df[id])
+    bad_words <- unlist(hunspell::hunspell_find(sentence))
+    if(length(bad_words) > 0) {
+      suggested <- hunspell::hunspell_suggest(bad_words)
+      for(i in seq_along(bad_words)) {
+        bad_words[i] <- paste("\\s+", bad_words[i], "\\s+", sep="")
+      }
+      replacements <- rep(NA, length(suggested))
+      for(i in c(1:length(suggested))) {
+        replacements[i] <- paste0(" ",suggested[[i]][1], " ")
+      }
+      for(i in c(1:length(bad_words))) {
+        if(replacements[i] != " NA ") {
+          sentence <- gsub(bad_words[i], replacements[i], sentence)
+        }
+      }
+      return(sentence)
+    } else {
+      return(sentence)
+    }
+  }
+```
+
+
+```{r}
+english <- tolower(joined$text[joined$langs == "en"])
+
+pb <- txtProgressBar(min = 0, max=length(english), style=3)
+bad_words_en <- unlist(lapply(1:length(english), check_bad, "en_US", english))
+close(pb)
+pb <- txtProgressBar(min = 0, max=length(english), style=3)
+bad_words_gb <- unlist(lapply(1:length(english), check_bad, "en_GB", english))
+close(pb)
+
+pb <- txtProgressBar(min = 0, max=length(english), style=3)
+clean_english <- lapply(1:length(english), check_spelling, english)
+close(pb)
+
+```
+
+
+```{r}
 write.table(english, quote = F, col.names = F, row.names = F, file = "../../data/muse/en/tweets_en.txt")
+```
+
+```{r}
+embeddings <- read.table("../../data/processed/sent_embeddings.txt")
+```
+
+```{r}
+cosineSimilarity <- function(x,y) {
+  # The most straightforward definition would be just:
+  #  x %*% t(y)      /     (sqrt(rowSums(x^2) %*% t(rowSums(y^2))))
+  # However, we do a little type-checking and a few speedups.
+
+  # Allow non-referenced characters to refer to the original matrix.
+  y = sub_out_formula(y,x)
+
+  if (!(is.matrix(x) || is.matrix(y))) {
+    if (length(x)==length(y)) {
+      x = as.matrix(x,ncol=length(x))
+      y = as.matrix(y,ncol=length(y))
+    }
+    else {
+      stop("At least one input must be a matrix")
+    }
+  }
+
+  if (is.vector(x)) {
+    x = as.matrix(x,ncol=ncol(y))
+  }
+  if (is.vector(y)) {
+    y = as.matrix(y,ncol=ncol(x))
+  }
+
+  # Using tcrossprod should be faster than transposing manually.
+  # Of course, this is still double-inefficient b/c we're calculating both
+  # triangles of a symmetrical matrix, I think.
+  tcrossprod(x,y)/
+    (sqrt(tcrossprod(square_magnitudes(x),square_magnitudes(y))))
+  #
+}
+
+sub_out_formula = function(formula,context) {
+  # Despite the name, this will work on something that
+  # isn't a formula. That's by design: we want to allow
+  # basic reference passing, and also to allow simple access
+  # to words.
+
+  if (class(context) != "VectorSpaceModel") {return(formula)}
+  if (class(formula)=="formula") {
+    formula[[2]] <- sub_out_tree(formula[[2]],context)
+    return(eval(formula[[2]]))
+  }
+  if (is.character(formula)) {return(context[[formula]])}
+  return(formula)
+}
+
+square_magnitudes = function(object) {
+  if (class(object)=="VectorSpaceModel") {
+      if (methods::.hasSlot(object, ".cache")) {
+      if (is.null(object@.cache$magnitudes)) {
+        object@.cache$magnitudes = rowSums(object^2)
+      }
+      return(object@.cache$magnitudes)
+      } else {
+        message("You seem to be using a VectorSpaceModel saved from an earlier version of this package.")
+        message("To turn on caching, which greatly speeds up queries, type")
+        message("yourobjectname@.cache = new.env()")
+        return(rowSums(object^2))
+      }
+  } else {
+    return(rowSums(object^2))
+  }
+}
+```
+
+```{r}
+cosineSim <- function(id, i) {
+  cosineSimilarity(embeddings[id,], embeddings[i,])
+}
+
+sims <- unlist(lapply(seq(1,2500,1), cosineSim, i=64))
+```
+
+
+
+
+
+```{r}
+library(Rtsne)
+
+
+tsne <- Rtsne(embeddings, check_duplicates = F, dims = 3)
+```
+
+```{r}
+pca1 <- princomp(embeddings)
+pca1 <- as.data.frame(pca1$scores[,c(1:2)])
+```
+
+```{r}
+tsne_y <- as.data.frame(tsne$Y)
+#tsne_y <- as.data.frame(pca1)
+tsne_y$gender <- joined$pred_gender[joined$langs == "en"]
+tsne_y$age <- joined$age[joined$langs == "en"]
+tsne_y$ethn <- joined$race[joined$langs == "en"]
+```
+
+```{r}
+library(ggplot2)
+
+ggplot(data = tsne_y[tsne_y$gender %in% c("female", "male"),], aes(x=Comp.1, y=Comp.2))+
+  geom_point(aes(color = gender), alpha=0.8)
+
+p1 <- ggplot(data = tsne_y[!is.na(tsne_y$age),], aes(x=Comp.1, y=Comp.2))+
+  geom_point(aes(color = age), alpha=0.6)+
+  scale_colour_distiller(type = "div")+
+  theme_minimal()
+
+p2 <- ggplot(data = tsne_y[!is.na(tsne_y$ethn),], aes(x=V1, y=V2))+
+  geom_point(aes(color = ethn), alpha = 0.8)+
+  theme_minimal()
+```
+
+```{r}
+tsne_gender <- tsne_y[tsne_y$gender %in% c("female", "male"),]
+```
+
+```{r}
+library(plot3D)
+tsne_gender <
+
+scatter3D(x=tsne_gender$V1, y=tsne_gender$V2, z = tsne_gender$V3, col = tsne_gender$gender)
+```
+
+```{r}
+kmns <- kmeans(as.matrix(embeddings), centers = 130, trace = F, iter.max = 100)
+```
+
+```{r}
+tsne_y$clust <- kmns$cluster
+```
+
+```{r}
+table(tsne_y$gender, tsne_y$clust)
 ```
 
