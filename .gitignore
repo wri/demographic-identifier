@@ -18,7 +18,6 @@ weights.28-3.73.hdf5
 *.jpeg
 *.bmp
 *.RDS
-*.png
 *.DS_Store
 *.h5
 .DS_Store
@@ -26,3 +25,4 @@ weights.28-3.73.hdf5
 *.vec
 sent_embeddings.txt
 data/processed/sent_embeddings.txt
+*.npy
