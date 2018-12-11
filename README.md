@@ -15,7 +15,7 @@ The R requirements `tidyverse`, `gender`, `plyr`, and `jsonlite` can be installe
 install.packages(c('tidyverse', 'gender', 'plyr', 'jsonlite'))
 ```
 
-### Useage
+### Use
 
 #### 1. Data acquisition
 Input data should be in the form of a compressed streaming JSON returned from the Twitter API. The `download_data.R` script will identify all user profile images in the API results and download every image to the `img` folder.
