@@ -44,7 +44,7 @@ The WideResNet architecture automatically identifies and disregards Twitter hand
 
 #### Text cleaning
 
-Tweets often are not grammatically correct, have spelling errors, and have hashtags. The Python module `ekphrasis` is used to clean the Twitter text data, using a language model (FastText) trained on 1 billion tweets. This automatically corrects common spelling errors, like elongating words (ex: "wooooooow"), hashtag phrases (ex: "#savetheplanet" -> "save the planet"), and converts user mentions to "<user>". 
+Tweets often are not grammatically correct, have spelling errors, and have hashtags. The Python module `ekphrasis` is used to clean the Twitter text data, using a language model (FastText) trained on 1 billion tweets. This automatically corrects common spelling errors, like elongating words (ex: "wooooooow"), hashtag phrases (ex: "#savetheplanet" -> "save the planet"), and converts user mentions to a single unique token. 
 
 #### Semantics and topics
 
@@ -53,3 +53,5 @@ Differences in semantics between demographic groups can be modelled with [neural
 ## Issues / To-do
 
 This toolkit is still very much in the research stage and is a work in progress. The scripts and file/folder handling are not perfect. I hope to transition the entirety of the toolkit to Python 3 and remove the R dependencies if possible. I also hope to streamline the scripts to require less user handling of the workflow.
+
+The semantics and topics stage is still being investigated, and methodologies / code will be added in the upcoming weeks (as well as results for the first case study!!)
