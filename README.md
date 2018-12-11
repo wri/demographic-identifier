@@ -34,10 +34,10 @@ We have tested ethnicity identification using computer vision, but without train
 
 
 ## Methodology
+
+![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/model-structure.png)
+
 #### Model architecture
-
-![](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/model-structure.png)
-
 Gender is estimated using a combination of computer vision and U.S. census data. The `gender` [R package](https://github.com/ropensci/gender) matches first names to gender proportions in the U.S. census. Gender and age were also estimated using a [pre-trained](https://github.com/yu4u/age-gender-estimation) [WideResNet architecture](https://arxiv.org/pdf/1605.07146.pdf) network trained on 500,000 photographs labelled by age and gender. 
 
 The mean error is 3 years for age, and the accuracy rate for gender is 95%. These estimates are validated by matching the name, when available, to US census data on gender percentiles by first name. In more than 95% of cases, these two estimates match. When they do not, the highest confidence estimate is used as the gender prediction. Pairing these two modes of estimating gender allows an estimate where only one of the two data sources are available (User image containing a face, or first name). 
