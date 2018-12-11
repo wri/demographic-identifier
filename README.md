@@ -54,6 +54,11 @@ Differences in semantics between demographic groups can be modelled with [neural
 
 ## Issues / To-do
 
-This toolkit is still very much in the research stage and is a work in progress. The scripts and file/folder handling are not perfect. I hope to transition the entirety of the toolkit to Python 3 and remove the R dependencies if possible. I also hope to streamline the scripts to require less user handling of the workflow.
-
-The semantics and topics stage is still being investigated, and methodologies / code will be added in the upcoming weeks (as well as results for the first case study!!)
+1. Remove blank / one-word / only mentions in tweets / NA
+2. Include the subsetting of english tweets in the csv creation stage
+3. Save embeddings as a dict id: embed
+4. TSNE visualization of embeddings by demographic groups
+5. Cluster analysis of embeddings / identify which clusters are most unique to which demographics
+6. Train custom tweet2vec
+7. Transition R scripts to python where available
+8. Transition tweet2vec to python 3 if possible
