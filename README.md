@@ -1,9 +1,9 @@
 # demographic-identifier
-Computer vision and NLP to identify age, race, and gender in photographs
+Ever wondered how to engage more diversity in communication strategies? This toolkit identifies gender, age and ethnic communities on Twitter with computer vision and analyzes what makes a message inclusive using natural language processing.
 
 ## Installation
 
-This Python + R toolkit requires a Python 3.6 virtual environment. The dependencies can be installed with 
+This Python + R toolkit requires a Python 3.6 environment. The dependencies can be installed with 
 
 ```
 $ pip3 install -r requirements.txt
