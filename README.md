@@ -27,7 +27,7 @@ Running, in order, the `age-gender-image.py`, `process_results.R`, and `calc_gen
 Ethnicity is estimated using the Python package [ethnicolr](https://github.com/appeler/ethnicolr) which uses character-level RNN to predict race from first and last name. After install, ethnicity can be estimated using the following bash script
 
 ```
-pred_wiki_name -o ../results/stream_05/output-wiki-pred-race.csv -l last.name -f first.name ../results/stream_05/results_gender_age.csv
+pred_wiki_name -o {output.csv} -l last.name -f first.name {input.csv}
 ```
 
 We have tested ethnicity identification using computer vision, but without training a model from scratch - which we do not have the labelled data for - there does not seem to be any deployable alternatives.
