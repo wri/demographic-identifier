@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from ekphrasis.classes.preprocessor import TextPreProcessor
 from ekphrasis.classes.tokenizer import SocialTokenizer
 from ekphrasis.dicts.emoticons import emoticons
@@ -15,8 +16,8 @@ tweets = []
 for line in open(data_en):
     tweets.append(line)
 
-print(len(tweets))
-
+print("Found {} tweets".format(len(tweets)))
+print("Correcting elongated, segmented, allcaps, repeated words, spelling errors, and hashtags with the twitter 2018 corrector")
 
 text_processor = TextPreProcessor(
     normalize=['url', 'email', 'percent', 'money', 'phone', 'user', 'time',
@@ -46,6 +47,6 @@ for s in tweets:
 
 print(len(prepr))
 for s in prepr:
-    with open("output.txt", "a") as f:
+    with open("../../data/processed/english_corrected.txt", "a") as f:
         f.write(s + "\n")
     f.close()
