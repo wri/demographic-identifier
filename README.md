@@ -21,7 +21,7 @@ install.packages(c('tidyverse', 'gender', 'plyr', 'jsonlite'))
 Input data should be in the form of a compressed streaming JSON returned from the Twitter API. The `download_data.R` script will identify all user profile images in the API results and download every image to the `img` folder.
 
 #### 2. Age and gender identification
-Running, in order, the `age-gender-image.py`, `process_results.R`, and `calc_gender_age.R` scripts will create a .CSV in the `results` folder estimating the age and gender of each twitter handle.
+Running, in order, the `age-gender-image.py` and `gender_age.R` scripts will create a .CSV in the `results` folder estimating the age and gender of each twitter handle.
 
 #### 3. Ethnicity identification
 Ethnicity is estimated using the Python package [ethnicolr](https://github.com/appeler/ethnicolr) which uses character-level RNN to predict race from first and last name. After install, ethnicity can be estimated using the following bash script
@@ -45,6 +45,8 @@ The WideResNet architecture automatically identifies and disregards Twitter hand
 #### Text cleaning
 
 Tweets often are not grammatically correct, have spelling errors, and have hashtags. The Python module `ekphrasis` is used to clean the Twitter text data, using a language model (FastText) trained on 1 billion tweets. This automatically corrects common spelling errors, like elongating words (ex: "wooooooow"), hashtag phrases (ex: "#savetheplanet" -> "save the planet"), and converts user mentions to a single unique token. 
+
+The `spell-correction.py` script will take an input CSV of tweets and write cleaned output to a CSV in the `data/processed` folder.
 
 #### Semantics and topics
 
