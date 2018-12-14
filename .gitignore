@@ -26,3 +26,4 @@ weights.28-3.73.hdf5
 sent_embeddings.txt
 data/processed/sent_embeddings.txt
 *.npy
+*.feat
