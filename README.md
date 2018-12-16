@@ -3,10 +3,10 @@ Ever wondered how to engage more diversity in communication strategies? This too
 
 ## Examples
 ![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/use-2.png)
-*image_caption*
+*Semantic similarity of randomly sampled Tweets about legislation, innovation, and clean water shows the ability of the Universal Sentence Encoder to cluster Tweets by meaning.*
 
 ![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/age-gender.png)
-*image_caption*
+*Distribution of select topics by age (left) and gender (right)*
 
 
 ## Installation
