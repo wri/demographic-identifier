@@ -3,10 +3,10 @@ Ever wondered how to engage more diversity in communication strategies? This too
 
 ## Examples
 ![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/use-2.png)
-
+*image_caption*
 
 ![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/age-gender.png)
-
+*image_caption*
 
 
 ## Installation
