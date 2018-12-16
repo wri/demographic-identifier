@@ -1,6 +1,14 @@
 # demographic-identifier
 Ever wondered how to engage more diversity in communication strategies? This toolkit identifies gender, age and ethnic communities on Twitter with computer vision and analyzes what makes a message inclusive using natural language processing.
 
+## Examples
+![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/use-2.png)
+
+
+![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/age-gender.png)
+
+
+
 ## Installation
 
 This Python + R toolkit requires a Python 3.6 environment. The dependencies can be installed with 
@@ -53,14 +61,6 @@ The `spell-correction.py` script will take an input CSV of tweets and write clea
 #### Semantics and topics
 
 Differences in semantics between demographic groups can be modelled with [neural variational inference](https://arxiv.org/abs/1511.06038) or sentence embeddings that do not rely on continuous sentences, such as [doc2vec](https://cs.stanford.edu/~quocle/paragraph_vector.pdf). With large amounts of training data, semantics may be modelled by taking the l2 norm of the summation of word level multilingual embeddings, such as [MUSE](https://github.com/facebookresearch/MUSE). 
-
-#### Sample results
-![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/use-2.png)
-
-
-![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/age-gender.png)
-
-
 
 ## Issues / To-do
 
