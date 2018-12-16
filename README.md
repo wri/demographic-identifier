@@ -6,7 +6,7 @@ Ever wondered how to engage more diversity in communications? This toolkit ident
 *Semantic similarity of randomly sampled Tweets about legislation, innovation, and clean water shows the ability of the Universal Sentence Encoder to cluster Tweets by meaning.*
 
 ![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/age-gender.png)
-*Distribution of select topics by age (left) and gender (right) allows the user to understand how certatin demographics engage with different messages.*
+*Distribution of select topics by age (left) and gender (right) allows the user to understand how certain demographics engage with different messages.*
 
 
 ## Installation
