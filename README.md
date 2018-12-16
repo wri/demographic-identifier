@@ -57,8 +57,7 @@ Differences in semantics between demographic groups can be modelled with [neural
 #### Sample results
 
 ![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/use-2.png)
-![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/gender.png)
-![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/age.png)
+![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/age-gender.png)
 
 
 
