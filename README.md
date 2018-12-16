@@ -1,12 +1,12 @@
 # demographic-identifier
-Ever wondered how to engage more diversity in communication strategies? This toolkit identifies gender, age and ethnic communities on Twitter with computer vision and analyzes what makes a message inclusive using natural language processing.
+Ever wondered how to engage more diversity in communications? This toolkit identifies gender, age and ethnic communities on Twitter with computer vision and analyzes what makes a message inclusive using neural sentence embeddings.
 
 ## Examples
 ![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/use-2.png)
 *Semantic similarity of randomly sampled Tweets about legislation, innovation, and clean water shows the ability of the Universal Sentence Encoder to cluster Tweets by meaning.*
 
 ![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/age-gender.png)
-*Distribution of select topics by age (left) and gender (right)*
+*Distribution of select topics by age (left) and gender (right) allows the user to understand how certatin demographics engage with different messages*
 
 
 ## Installation
