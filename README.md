@@ -64,12 +64,12 @@ Differences in semantics between demographic groups can be modelled with [neural
 
 ## Issues / To-do
 
-~~1. Remove blank / one-word / only mentions in tweets / NA~~
-~~2. Include the subsetting of english tweets in the csv creation stage~~
-~~3. Save embeddings as a dict id: embed~~
-~~4. TSNE visualization of embeddings by demographic groups~~
-~~5. Cluster analysis of embeddings / identify which clusters are most unique to which demographics~~
-~~6. Create visualization of initial results!~~
+1. ~~Remove blank / one-word / only mentions in tweets / NA~~
+2. ~~Include the subsetting of english tweets in the csv creation stage~~
+3. ~~Save embeddings as a dict id: embed~~
+4. ~~TSNE visualization of embeddings by demographic groups~~
+5. ~~Cluster analysis of embeddings / identify which clusters are most unique to which demographics~~
+6. ~~Create visualization of initial results!~~
 7. Train custom tweet2vec
 8. Transition R scripts to python where available
 9. Transition tweet2vec to python 3 if possible
