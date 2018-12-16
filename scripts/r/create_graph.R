@@ -1,4 +1,5 @@
 library(tidyverse)
+library(ggridges)
 figdata <- read.csv("master-scripts/output-wiki-pred-race.csv")
 figdata$race <- as.character(figdata$race)
 figdata$race[figdata$race == "GreaterEuropean,WestEuropean,Hispanic"] <- "Latino"
@@ -47,3 +48,36 @@ p1 <- ggplot(data=figdata, aes(x=age, y=n, fill=pred_gender))+
   theme(panel.grid.minor.x=element_blank(),
         panel.grid.major.x=element_blank())+
   facet_wrap(.~race)
+
+##### GENDER BY TOPIC #######
+topic <- read.csv("data/processed/topic_gender.csv")
+bolded <- rep("plain", 22)
+bolded[10] <- "bold"
+
+ggplot(data=topic, aes(x=reorder(Topic, Percent.female), y=Percent.female*100))+
+  geom_col(aes(alpha = Percent.female))+
+  coord_flip()+
+  geom_hline(yintercept=43.4, linetype = "dashed")+
+  theme_bw()+
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text.y=element_text(face = bolded),
+        legend.position = "none")+
+  xlab("")+
+  ylab("Percent female")
+
+##### AGE BY TOPIC ######
+age <- read.csv("data/processed/age_data.csv")
+age <- age %>%
+  group_by(name) %>%
+  mutate(age_mean = mean(age))
+
+bolded <- rep("plain", 19)
+bolded[11] <- "bold"
+
+ggplot(data = age, aes(x=age, y = reorder(name, age_mean)))+
+  geom_density_ridges()+
+  theme_bw()+
+  theme(axis.text.y=element_text(face = bolded))+
+  xlab("Age")+
+  ylab("")

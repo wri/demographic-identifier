@@ -1,6 +1,3 @@
-stream = "stream_05"
-
-
 files <- list.files(stream, pattern = "[.]gz")
 files <- paste0(stream, "/", files)
 
@@ -12,13 +9,15 @@ read_in_file <- function(file) {
   return(l)
 }
 
-if(file.exists("finished_files.txt")) {
+file <- read_in_file("data/raw/2018_community_filtered.json.gz")
+
+if(file.exists("data/raw/finished_files.txt")) {
   finished_files <- read.table("finished_files.txt", col.names = F, as.is=T)
   colnames(finished_files) <- c("file")
   files <- files[!files %in%  finished_files$file]
 } else {
   temp <- NA
-  write.table(temp, "finished_files.txt", col.names=F)
+  write.table(temp, "data/raw/finished_files.txt", col.names=F)
 }
 
 
@@ -29,8 +28,8 @@ if(length(files) > 0) {
 }
 
 cat("Reading in data \n")
-if(file.exists("all_files.RDS")) {
-  prior <- readRDS("all_files.RDS")
+if(file.exists("data/raw/all_files.RDS")) {
+  prior <- readRDS("data/raw/all_files.RDS")
 }
 if(length(files) > 0) {
   original_cols <- colnames(all_files)
@@ -39,19 +38,19 @@ if(length(files) > 0) {
     prior <- prior[,to_keep]
     all_files <- rbind(prior, all_files)
   }
-  saveRDS(all_files, "all_files.RDS")
+  saveRDS(all_files, "data/raw/all_files.RDS")
   
   files <- list.files(stream, pattern = "[.]gz")
   files <- paste0(stream, "/", files)
-  write.table(files, "finished_files.txt", row.names = F, col.names = F, quote = F)
+  write.table(files, "data/raw/finished_files.txt", row.names = F, col.names = F, quote = F)
 } else {
   all_files <- prior
   rm(prior)
 }
 
 cat("Calculating image names \n")
-images <- all_files$user.profile_image_url_https
-names <- all_files$user.screen_name
+images <- file$user.profile_image_url_https
+names <- file$user.screen_name
 image_names <- data.frame(images = images, names = names)
 image_names$images <- gsub("_normal", "", image_names$images)
 image_names$destfiles <- seq(1, length(images), 1)
@@ -59,7 +58,7 @@ image_names$type <- gsub(".*\\.", "", image_names$images)
 image_names$destfiles <- paste0(image_names$destfiles, ".", tolower(image_names$type))
 image_names <- image_names[!duplicated(image_names$images),]
 image_names <- image_names[image_names$type %in% c("jpg", "jpeg", "png", "bmp"),]
-write.csv(image_names, paste0("../results/", stream, "/image_names.csv"))
+write.csv(image_names, "data/raw/image_names.csv")
 #image_names <- read.csv("image_names.csv")
 download_files <- function(ids) {
   #pb <- txtProgressBar(min = 0, max = end, initial = start, style = 3)
@@ -68,7 +67,7 @@ download_files <- function(ids) {
     print(image_names$images[i])
     #setTxtProgressBar(pb, i)
     Sys.sleep(sample(seq(0.1,0.50,0.01), 1))
-    download.file(image_names$images[i], method="curl", destfile = paste0("../img/", image_names$destfiles[i]), quiet = T)
+    download.file(image_names$images[i], method="curl", destfile = paste0("data/img/", image_names$destfiles[i]), quiet = T)
   }
 }
 

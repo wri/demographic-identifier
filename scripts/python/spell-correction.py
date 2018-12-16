@@ -2,32 +2,10 @@
 from ekphrasis.classes.preprocessor import TextPreProcessor
 from ekphrasis.classes.tokenizer import SocialTokenizer
 from ekphrasis.dicts.emoticons import emoticons
-
+from utils import printProgressBar
 import ssl
 
-ssl._create_default_https_context = ssl._create_unverified_context
-
-# Print iterations progress
-def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█'):
-    """
-    Call in a loop to create terminal progress bar
-    @params:
-        iteration   - Required  : current iteration (Int)
-        total       - Required  : total iterations (Int)
-        prefix      - Optional  : prefix string (Str)
-        suffix      - Optional  : suffix string (Str)
-        decimals    - Optional  : positive number of decimals in percent complete (Int)
-        length      - Optional  : character length of bar (Int)
-        fill        - Optional  : bar fill character (Str)
-    """
-    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
-    filledLength = int(length * iteration // total)
-    bar = fill * filledLength + '-' * (length - filledLength)
-    print('\r%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end = '\r')
-    # Print New Line on Complete
-    if iteration == total: 
-        print()
-
+ssl._create_default_https_context = ssl._create_unverified_context\
 
 def ws_tokenizer(text):
     return text.split()
@@ -44,8 +22,8 @@ print("Correcting elongated, segmented, allcaps, repeated words, spelling errors
 text_processor = TextPreProcessor(
     normalize=['url', 'email', 'percent', 'money', 'phone', 'user', 'time',
                'date', 'number'],
-    annotate={"hashtag", "elongated", "segmented", "allcaps", "repeated", 'emphasis',
-              'censored'},
+    #annotate={"hashtag", "elongated", "segmented", "allcaps", "repeated", 'emphasis',
+    #          'censored'},
     all_caps_tag="wrap",
     fix_text=True,
     segmenter="english",

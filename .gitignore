@@ -27,3 +27,4 @@ sent_embeddings.txt
 data/processed/sent_embeddings.txt
 *.npy
 *.feat
+data/img/*.png
