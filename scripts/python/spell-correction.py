@@ -2,15 +2,15 @@
 from ekphrasis.classes.preprocessor import TextPreProcessor
 from ekphrasis.classes.tokenizer import SocialTokenizer
 from ekphrasis.dicts.emoticons import emoticons
-
+from utils import printProgressBar
 import ssl
 
-ssl._create_default_https_context = ssl._create_unverified_context
+ssl._create_default_https_context = ssl._create_unverified_context\
 
 def ws_tokenizer(text):
     return text.split()
 
-data_en = "../../data/muse/en/tweets_en.txt"
+data_en = "../../data/processed/english_text.txt"
 print("### Opening tweets ### \n")
 tweets = []
 for line in open(data_en):
@@ -22,8 +22,8 @@ print("Correcting elongated, segmented, allcaps, repeated words, spelling errors
 text_processor = TextPreProcessor(
     normalize=['url', 'email', 'percent', 'money', 'phone', 'user', 'time',
                'date', 'number'],
-    annotate={"hashtag", "elongated", "segmented", "allcaps", "repeated", 'emphasis',
-              'censored'},
+    #annotate={"hashtag", "elongated", "segmented", "allcaps", "repeated", 'emphasis',
+    #          'censored'},
     all_caps_tag="wrap",
     fix_text=True,
     segmenter="english",
@@ -36,13 +36,15 @@ text_processor = TextPreProcessor(
     dicts=[emoticons]
 )
 
+printProgressBar(0, len(tweets), prefix = "Progress:", suffix = "Complete", length = 50)
 prepr = []
-for s in tweets:
-    sent = ((" ".join(text_processor.pre_process_doc(s))))
+for s, twt in enumerate(tweets):
+    sent = ((" ".join(text_processor.pre_process_doc(twt))))
     if len(sent.split()) > 0:
         if "…" in sent.split().pop() :
             sentsplit = sent.split()[:-2]
             sent = (" ".join(sentsplit))
+    printProgressBar(s + 1, len(tweets), prefix = 'Progress:', suffix = 'Complete', length = 50)
     prepr.append(sent)
 
 print(len(prepr))

@@ -1,5 +1,13 @@
 # demographic-identifier
-Ever wondered how to engage more diversity in communication strategies? This toolkit identifies gender, age and ethnic communities on Twitter with computer vision and analyzes what makes a message inclusive using natural language processing.
+Ever wondered how to engage more diversity in communications? This toolkit identifies gender, age and ethnic communities on Twitter with computer vision and analyzes what makes a message inclusive using neural sentence embeddings.
+
+## Examples
+![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/use-2.png)
+*Semantic similarity of randomly sampled Tweets about legislation, innovation, and clean water shows the ability of the Universal Sentence Encoder to cluster Tweets by meaning.*
+
+![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/age-gender.png)
+*Distribution of select topics by age (left) and gender (right) allows the user to understand how certain demographics engage with different messages.*
+
 
 ## Installation
 
@@ -56,12 +64,12 @@ Differences in semantics between demographic groups can be modelled with [neural
 
 ## Issues / To-do
 
-1. Remove blank / one-word / only mentions in tweets / NA
-2. Include the subsetting of english tweets in the csv creation stage
-3. Save embeddings as a dict id: embed
-4. TSNE visualization of embeddings by demographic groups
-5. Cluster analysis of embeddings / identify which clusters are most unique to which demographics
-6. Create visualization of initial results!
+1. ~~Remove blank / one-word / only mentions in tweets / NA~~
+2. ~~Include the subsetting of english tweets in the csv creation stage~~
+3. ~~Save embeddings as a dict id: embed~~
+4. ~~TSNE visualization of embeddings by demographic groups~~
+5. ~~Cluster analysis of embeddings / identify which clusters are most unique to which demographics~~
+6. ~~Create visualization of initial results!~~
 7. Train custom tweet2vec
 8. Transition R scripts to python where available
 9. Transition tweet2vec to python 3 if possible
