@@ -10,5 +10,7 @@ english <- filtered[langs == "en",]
 english <- english[nchar(english$text) > 50,]
 english$text <- gsub("[\r\n]", " ", english$text)
 english <- english[!is.na(english$text),]
+english$clust <- clusts
+saveRDS(english, "data/processed/ethn_topic_embeddings.rds")
 write.csv(english, "data/processed/english.csv", row.names = F, quote = F)
 write.table(english$text, "data/processed/english_text.txt", row.names = F, quote = F, col.names = F)
