@@ -63,13 +63,6 @@ The `spell-correction.py` script will take an input CSV of tweets and write clea
 Differences in semantics between demographic groups can be modelled with [neural variational inference](https://arxiv.org/abs/1511.06038) or sentence embeddings that do not rely on continuous sentences, such as [doc2vec](https://cs.stanford.edu/~quocle/paragraph_vector.pdf). With large amounts of training data, semantics may be modelled by taking the l2 norm of the summation of word level multilingual embeddings, such as [MUSE](https://github.com/facebookresearch/MUSE). 
 
 ## Issues / To-do
-
-1. ~~Remove blank / one-word / only mentions in tweets / NA~~
-2. ~~Include the subsetting of english tweets in the csv creation stage~~
-3. ~~Save embeddings as a dict id: embed~~
-4. ~~TSNE visualization of embeddings by demographic groups~~
-5. ~~Cluster analysis of embeddings / identify which clusters are most unique to which demographics~~
-6. ~~Create visualization of initial results!~~
-7. Train custom tweet2vec
-8. Transition R scripts to python where available
-9. Transition tweet2vec to python 3 if possible
+1. Transition R scripts to python where available
+2. Code commenting and documentation of pipeline
+3. Clean up data folder and make data workflow more clear
