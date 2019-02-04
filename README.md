@@ -5,7 +5,7 @@ Ever wondered how to engage more diversity in communications? This toolkit ident
 ![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/use-2.png)
 *Semantic similarity of randomly sampled Tweets about legislation, innovation, and clean water shows the ability of the Universal Sentence Encoder to cluster Tweets by meaning.*
 
-![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/png/gender_race.png)
+![Summary results](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/png/gender_race.png)
 *Distribution of select topics by gender (left) and race (right) allows the user to understand demographic differences in topic engagement.*
 
 ## Installation
@@ -37,7 +37,8 @@ Ethnicity is estimated using the Python package [ethnicolr](https://github.com/a
 pred_wiki_name -o {output.csv} -l last.name -f first.name {input.csv}
 ```
 
-We have tested ethnicity identification using computer vision, but without training a model from scratch - which we do not have the labelled data for - there does not seem to be any deployable alternatives.
+#### 4. Visualization
+The `demographic_summary.R` script will create a summary visualization of number of twitter handles by demographic. The `demographic_topics.R` script can be used to create the above figures of topic distributions by demographic.
 
 
 ## Methodology
@@ -61,7 +62,7 @@ The `spell-correction.py` script will take an input CSV of tweets and write clea
 
 In order to model the semantic and topical structure of Tweets, a number of recent natural language processing approaches were tested. These include latent Bayesian approaches such as latent Dirichlet allocation (Blei, 2003), structured topic models (Roberts, 2013), biterm topic models (Yan, 2013), as well as neural embedding approaches including Word2vec (Mikelov, 2014), Tweet2vec (Vosoughi, 2016), MUSE (Conneau et al., 2018), and the Universal Sentence Encoder (Cer et al., 2018). The Universal Sentence Encoder (USE) performed better than the other tested approaches when qualitatively evaluated on sentence similarity and topic coherence.
 
-The Universal Sentence Encoder (Cer et al., 2018) leverages transfer learning to learn task-invariant sentence representations. The pre-trained model uses the transformer architecture (Vaswani et al., 2017) to jointly learn tasks including sentiment, subjectivity, and polarity analysis as well as question classification and semantic similarity. This generalizability makes it a strong candidate for representing the topics and meanings of Tweets, which vary widely in diction and prose. 138,512 Tweets from over 135,708 unique handles were encoded with the pretrained USE model and clustered with K-nearest neighbors (KNN) clustering. Cluster amounts ranging from 50-250 were tested by reading random stratified subsamples of 20 randomly chosen topics. KNN with k = 200 was selected for final analysis based on this manual validation method. Each of the 200 topics were manually labelled by reading 50 random Tweets in each topic.
+The Universal Sentence Encoder (Cer et al., 2018) leverages transfer learning to learn task-invariant sentence representations. The pre-trained model uses the transformer architecture (Vaswani et al., 2017) to jointly learn tasks including sentiment, subjectivity, and polarity analysis as well as question classification and semantic similarity. This generalizability makes it a strong candidate for representing the topics and meanings of Tweets, which vary widely in diction and prose. 138,512 Tweets from over 135,708 unique handles were encoded with the pretrained USE model and clustered with K-nearest neighbors (KNN) clustering. Cluster amounts ranging from 50-250 were tested by reading random stratified subsamples of 20 randomly chosen topics. KNN with k = 200 was selected for final analysis based on this manual validation method. Each of the 200 topics were manually labelled by reading 50 random Tweets in each topic. Full code and descriptions are contained in the `USE-embeddings.ipnyb` notebook.
 
 ## Issues / To-do
 1. Transition R scripts to python where available
