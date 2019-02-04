@@ -126,6 +126,11 @@ mismatch$pred_gender[mismatch$photo_gender == "female" & mismatch$name_male > mi
 results_unique$pred_gender[which(results_unique$screen.name %in% mismatch$screen.name)] <- mismatch$pred_gender
 
 cat("Fixing more spelling errors\n")
+
+'''
+The below section of code corrects common spelling, encoding, and white space errors
+that were common issues with first and last names on Twitter
+'''
 output <- results_unique[,c(2,5,6,7,8,9,14)]
 output$last.name[grepl("[0-9]", output$last.name)] <- NA
 output$last.name <- trimws(gsub("\\S+\\s+|-", " ", output$last.name))

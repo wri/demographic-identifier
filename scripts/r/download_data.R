@@ -1,6 +1,17 @@
-files <- list.files(stream, pattern = "[.]gz")
-files <- paste0(stream, "/", files)
+'''
+This R script identifies links to images in a compressed JSON result from the Twitter API
+Images are downloaded and placed into a predetermined file with a unique identifier that is logged to a separate file
+The finished_files.txt and all_files.RDS allow the user to start and stop downloading, as rate limiting 
+can force this process to take many hours
+'''
 
+folder_name <- "stream_01"
+json_path <- "data/raw/2018_community_filtered.json.gz"
+finished_path <- "data/raw/finished_files.txt"
+finished_data <- "data/raw/all_files.RDS"
+
+files <- list.files(folder_name, pattern = "[.]gz")
+files <- paste0(folder_name, "/", files)
 
 read_in_file <- function(file) {
   z <- gzfile(file)
@@ -9,15 +20,15 @@ read_in_file <- function(file) {
   return(l)
 }
 
-file <- read_in_file("data/raw/2018_community_filtered.json.gz")
+file <- read_in_file(json_path)
 
-if(file.exists("data/raw/finished_files.txt")) {
-  finished_files <- read.table("finished_files.txt", col.names = F, as.is=T)
+if(file.exists(finished_path)) {
+  finished_files <- read.table(finished_path, col.names = F, as.is=T)
   colnames(finished_files) <- c("file")
   files <- files[!files %in%  finished_files$file]
 } else {
   temp <- NA
-  write.table(temp, "data/raw/finished_files.txt", col.names=F)
+  write.table(temp, finished_path, col.names=F)
 }
 
 
@@ -28,8 +39,8 @@ if(length(files) > 0) {
 }
 
 cat("Reading in data \n")
-if(file.exists("data/raw/all_files.RDS")) {
-  prior <- readRDS("data/raw/all_files.RDS")
+if(file.exists(finished_data)) {
+  prior <- readRDS(finished_data)
 }
 if(length(files) > 0) {
   original_cols <- colnames(all_files)
@@ -38,11 +49,11 @@ if(length(files) > 0) {
     prior <- prior[,to_keep]
     all_files <- rbind(prior, all_files)
   }
-  saveRDS(all_files, "data/raw/all_files.RDS")
+  saveRDS(all_files, finished_data)
   
   files <- list.files(stream, pattern = "[.]gz")
   files <- paste0(stream, "/", files)
-  write.table(files, "data/raw/finished_files.txt", row.names = F, col.names = F, quote = F)
+  write.table(files, finished_path, row.names = F, col.names = F, quote = F)
 } else {
   all_files <- prior
   rm(prior)
@@ -72,7 +83,6 @@ download_files <- function(ids) {
 }
 
 cat("Calculating where to start downloading \n")
-
 downloaded <- list.files("../img/")
 downloaded_number <- as.numeric(gsub("[.][A-z]{1,}", "", downloaded))
 
