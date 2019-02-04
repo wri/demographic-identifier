@@ -5,9 +5,11 @@ Ever wondered how to engage more diversity in communications? This toolkit ident
 ![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/use-2.png)
 *Semantic similarity of randomly sampled Tweets about legislation, innovation, and clean water shows the ability of the Universal Sentence Encoder to cluster Tweets by meaning.*
 
-![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/age-gender.png)
-*Distribution of select topics by age (left) and gender (right) allows the user to understand how certain demographics engage with different messages.*
+![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/png/gender_plot.png)
+*Distribution of select topics by gender allows the user to understand gender differences in topic engagement.*
 
+![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/png/youth_plot.png)
+*Distribution of select topics by youth allows the user to understand youth differences in topic engagement.*
 
 ## Installation
 
