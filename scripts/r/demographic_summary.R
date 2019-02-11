@@ -1,6 +1,8 @@
-dem_all <- readRDS("data/processed/demographics.rds")
-#dem_all <- dem_all[!duplicated(dem_all$screen.name),]
-dem_all$pred_gender <- as.character(dem_all$pred_gender)
+dem_before <- readRDS("data/processed/demographics.rds")
+dem_all <- readRDS("data/processed/2018_filtered.rds")
+dem_all <- dplyr::inner_join(dem_all, dem_before, by = c("user.screen_name" = "screen.name"))
+dem_all <- dem_all[!is.na(dem_all),]
+
 
 dem_all$race <- as.character(dem_all$race)
 dem_all$race[dem_all$race == "GreaterEuropean,WestEuropean,Hispanic"] <- "Latino"

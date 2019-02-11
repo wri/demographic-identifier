@@ -11,8 +11,8 @@ import csv
 pretrained_model = "https://github.com/yu4u/age-gender-estimation/releases/download/v0.5/weights.28-3.73.hdf5"
 modhash = 'fbe63257a054c1c5466cfd7bf14646d6'
 
-wd = os.getwd()
-images = os.listdir(wd + "img/")
+wd = os.getcwd()
+images = os.listdir("../../data/img/")
 
 class MyImage:
     def __init__(self, img_name):
@@ -26,7 +26,7 @@ def get_args():
     parser = argparse.ArgumentParser(description="This script detects faces from web cam input, "
                                                  "and estimates age and gender for the detected faces.",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("--weight_file", type=str, default=None,
+    parser.add_argument("--weight_file", type=str, default= None,
                         help="path to weight file (e.g. weights.28-3.73.hdf5)")
     parser.add_argument("--depth", type=int, default=16,
                         help="depth of network")
@@ -48,7 +48,7 @@ def draw_label(image, point, label, font=cv2.FONT_HERSHEY_SIMPLEX,
 
 def yield_images():
     for img in images:
-        yield(MyImage(img))
+        yield(MyImage("../../data/img/" + img))
 
 
 def main():
@@ -59,7 +59,7 @@ def main():
     margin = args.margin
 
     if not weight_file:
-        weight_file = get_file("weights.28-3.73.hdf5", pretrained_model, cache_subdir="pretrained_models",
+        weight_file = get_file("weights.28-3.73.hdf5", pretrained_model, cache_subdir="../../data/pretrained_models",
                                file_hash=modhash, cache_dir=os.path.dirname(os.path.abspath(__file__)))
 
     # for face detection
@@ -73,6 +73,7 @@ def main():
     for img in yield_images():
         name = str(img)
         img = img.img
+        print(name)
         input_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img_h, img_w, _ = np.shape(input_img)
 
@@ -102,10 +103,14 @@ def main():
                 label = "{}, {}".format(int(predicted_ages[i]),
                                         "F" if predicted_genders[i][0] > 0.5 else "M")
                 draw_label(img, (d.left(), d.top()), label)
-            with open('results.csv', 'a') as csv_file:
-                csv_file.writerow([name, predicted_ages, predicted_genders])
+            print(name)
+            print(predicted_ages)
+            print(predicted_genders)
+            with open('results.csv', 'a') as csvfile:
+                csvwriter = csv.writer(csvfile, delimiter = ",")
+                csvwriter.writerow([name, predicted_ages, predicted_genders])
 
-        cv2.imshow("result", img)
+        #cv2.imshow("result", img)
         key = cv2.waitKey(30)
 
         if key == 27:
