@@ -13,6 +13,9 @@ modhash = 'fbe63257a054c1c5466cfd7bf14646d6'
 
 wd = os.getcwd()
 images = os.listdir("../../data/img/")
+print(len(images))
+images = [x for x in images if "png" or "jpeg" or "jpg" in x]
+print(len(images))
 
 class MyImage:
     def __init__(self, img_name):
@@ -99,13 +102,10 @@ def main():
             predicted_ages = results[1].dot(ages).flatten()
 
             # draw results
-            for i, d in enumerate(detected):
-                label = "{}, {}".format(int(predicted_ages[i]),
-                                        "F" if predicted_genders[i][0] > 0.5 else "M")
-                draw_label(img, (d.left(), d.top()), label)
-            print(name)
-            print(predicted_ages)
-            print(predicted_genders)
+            #for i, d in enumerate(detected):
+            #    label = "{}, {}".format(int(predicted_ages[i]),
+            #                            "F" if predicted_genders[i][0] > 0.5 else "M")
+            #    draw_label(img, (d.left(), d.top()), label)
             with open('results.csv', 'a') as csvfile:
                 csvwriter = csv.writer(csvfile, delimiter = ",")
                 csvwriter.writerow([name, predicted_ages, predicted_genders])
