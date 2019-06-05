@@ -1,11 +1,11 @@
-dem_before <- readRDS("data/processed/demographics.rds")
+#dem_before <- readRDS("data/processed/demographics.rds")
 dem_all <- readRDS("data/processed/2018_filtered.rds")
 dem_all <- dplyr::inner_join(dem_all, dem_before, by = c("user.screen_name" = "screen.name"))
 dem_all <- dem_all[!is.na(dem_all),]
 
 
 dem_all$race <- as.character(dem_all$race)
-dem_all$race[dem_all$race == "GreaterEuropean,WestEuropean,Hispanic"] <- "Latino"
+dem_all$race[dem_all$race == "GreaterEuropean,WestEuropean,Hispanic"] <- "Hispanic"
 dem_all$race[dem_all$race %in% c("Asian,GreaterEastAsian,Japanese",
                          "Asian,GreaterEastAsian,EastAsian")] <- "Asian"
 
@@ -47,6 +47,6 @@ ggplot(data=stats[!is.na(stats$race),], aes(x=age, y=n, fill=pred_gender))+
   facet_wrap(.~race)+
   xlab("Age")+
   ylab("Number of profiles")+
-  ggtitle("Demographic breakdown of study Twitter profiles", subtitle = "Ethnicity: 14% African, 17% Asian, 53% Caucasian, 16% Latino, n = 177,052\nGender: 38% Female, 62% Male, n = 135,708")+
+  ggtitle("Demographic breakdown of study Twitter profiles", subtitle = "Race: 14% African, 17% Asian, 53% Caucasian, 16% Hispanic, n = 177,052\nGender: 38% Female, 62% Male, n = 135,708")+
   scale_y_continuous(labels = c("10,000", "5,000", "0", "5000", "10,000"), breaks = c(-10000, -5000, 0, 5000, 10000), limits = c(-15000, 10000))+
   scale_x_continuous(breaks = c(10, 20, 30, 40, 50, 60), labels = c("10-19", "20-29", "30-39", "40-49", "50-59", "60-69"), limits = c(5, 70))
