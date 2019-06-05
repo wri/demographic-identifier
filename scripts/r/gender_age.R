@@ -1,11 +1,9 @@
 #! /usr/bin/Rscript
-
 suppressMessages(library(tidyverse))
-stream = "stream_05/"
 
 cat("Reading in data \n")
-results <- read.csv(paste0("../results/", stream, "results.csv"), header=F)
-colnames(results) <- c("age", "gender")
+results <- read.csv(paste0("data/processed/1-demographics/results_filtered.csv"), header=F)
+colnames(results) <- c("path", "age", "gender")
 results$age <- gsub("\\[|\\]", "", results$age)
 results$gender <- gsub("\\[|\\]", "", results$gender)
 results$n <- str_count(results$age, "\\s+") + 1 
@@ -38,51 +36,53 @@ for(i in c(1:nrow(df.expanded))) {
 
 cat("Formatting results \n")
 df.expanded <- df.expanded[,-c(4,5)]
-colnames(df.expanded) <- c("age", "gender", "name")
+colnames(df.expanded) <- c("name", "age", "gender")
 df.expanded$gender <- gsub("\\s+", " ", df.expanded$gender)
 df.expanded$gender <- gsub("^ | $", "", df.expanded$gender)
 df.expanded <- df.expanded %>% separate(gender, c("female", "male"), sep = " ")
-df.expanded[,c(1:3)] <- lapply(df.expanded[,c(1:3)], as.numeric)
-df.expanded[,c(1:3)] <- lapply(df.expanded[,c(1:3)], function(x) round(x, 2))
+df.expanded[,c(2:4)] <- lapply(df.expanded[,c(2:4)], as.numeric)
+df.expanded[,c(2:4)] <- lapply(df.expanded[,c(2:4)], function(x) round(x, 2))
 df.expanded$age <- round(df.expanded$age, 0)
 
-cat("Reading in zipped JSONs \n")
-results <- df.expanded
-results$name <- gsub("[.]{1,}/img_[0-9]{1,}/", "", results$name)
-results$name <- as.numeric(gsub("[.]jpg", "", results$name))
-files <- list.files(stream, pattern = "[.]gz")
-files <- paste0(stream, "/", files)
-read_in_file <- function(file) {
-  z <- gzfile(file)
-  l <- jsonlite::flatten(jsonlite::stream_in(z))
-  return(l)
-}
+#cat("Reading in zipped JSONs \n")
+#results <- df.expanded
+#results$name <- gsub("[.]{1,}/img_[0-9]{1,}/", "", results$name)
+#results$name <- as.numeric(gsub("[.]jpg", "", results$name))
+#files <- list.files(stream, pattern = "[.]gz")
+#files <- paste0(stream, "/", files)
+#read_in_file <- function(file) {
+#  z <- gzfile(file)
+#  l <- jsonlite::flatten(jsonlite::stream_in(z))
+#  return(l)
+#}
 
 #finished_files <- read.table("finished_files.txt", col.names = F, as.is=T)
 #colnames(finished_files) <- c("file")
 #files <- files[!files %in%  finished_files$file]
-if(length(files) > 0) {
-  all_files <- lapply(files, read_in_file)
-  all_files <- plyr::rbind.fill(all_files)
-}
+#if(length(files) > 0) {
+#  all_files <- lapply(files, read_in_file)
+#  all_files <- plyr::rbind.fill(all_files)
+#}
 
 #cat("Reading in data \n")
 #prior <- readRDS("all_files.RDS")
-if(length(files) > 0) {
-  original_cols <- colnames(all_files)
+#if(length(files) > 0) {
+#  original_cols <- colnames(all_files)
   #to_keep <- which(colnames(prior) %in% original_cols)
   #print(to_keep)
   #prior <- prior[,to_keep]
   #all_files <- rbind(prior, all_files)
-  saveRDS(all_files, paste0("../results/", stream, "/all_files.RDS"))
+#  saveRDS(all_files, paste0("../results/", stream, "/all_files.RDS"))
   
-  files <- list.files(stream, pattern = "[.]gz")
-  files <- paste0(stream, "/", files)
-  write.table(files, paste0("../results/", stream, "/finished_files.txt", row.names = F, col.names = F, quote = F))
-} else {
-  all_files <- prior
-  rm(prior)
-}
+#  files <- list.files(stream, pattern = "[.]gz")
+#  files <- paste0(stream, "/", files)
+#  write.table(files, paste0("../results/", stream, "/finished_files.txt", row.names = F, col.names = F, quote = F))
+#} else {
+#  all_files <- prior
+#  rm(prior)
+#}
+
+all_files <- readRDS("data/processed/2018_filtered.rds")
 all_files$sample <- seq(1, nrow(all_files), 1)
 user_name <- all_files[,colnames(all_files) %in% c("sample", "user.name", "user.screen_name")]
 colnames(user_name) <- c("screen.name", "user.name", "name")
@@ -96,7 +96,12 @@ user_name$user.name <- stringi::stri_trans_general(user_name$user.name, "latin-a
 user_name$user.name<- iconv(user_name$user.name, "UTF-8", "ASCII", sub = "")
 user_name$user.name <- gsub("[0-9]{1,}", "", user_name$user.name)
 user_name$user.name <- iconv(user_name$user.name, to='ASCII//TRANSLIT')
-results <- dplyr::left_join(results, user_name)
+
+df.expanded$name <- gsub("../../data/img/", "", df.expanded$name)
+df.expanded$name <- gsub("[.]jpg|[.]jpeg|[.]png", "", df.expanded$name)
+df.expanded$name <- as.numeric(df.expanded$name)
+results <- dplyr::left_join(df.expanded, user_name)
+
 
 cat("Cleaning up first and last name encoding and spelling\n")
 first.name <- gsub("([A-Za-z]+).*", "\\1", results$user.name)
@@ -104,6 +109,7 @@ results$last.name <- gsub('^.* ([[:alnum:]]+)$', '\\1', results$user.name)
 results$first.name <- first.name
 
 cat("Calculating gender with U.S. Census data\n")
+library(gender)
 gend <- gender(first.name)[,c(1:4)]
 colnames(gend) <- c("first.name", "name_male", "name_female", "name_gender")
 results <- left_join(results, gend)
@@ -127,11 +133,10 @@ results_unique$pred_gender[which(results_unique$screen.name %in% mismatch$screen
 
 cat("Fixing more spelling errors\n")
 
-'''
-The below section of code corrects common spelling, encoding, and white space errors
-that were common issues with first and last names on Twitter
-'''
-output <- results_unique[,c(2,5,6,7,8,9,14)]
+# The below section of code corrects common spelling, encoding, and white space errors
+# that were common issues with first and last names on Twitter
+
+output <- results_unique
 output$last.name[grepl("[0-9]", output$last.name)] <- NA
 output$last.name <- trimws(gsub("\\S+\\s+|-", " ", output$last.name))
 output$last.name <- gsub('\\p{So}|\\p{Cn}', '', output$last.name, perl = TRUE)
@@ -162,4 +167,4 @@ output$first.name[output$first.name == ""] <- NA
 
 cat("Saving output for Twitter handles with at least one of valid name or photo\n")
 valid_names <- gender(output$first.name)[,1]
-write.csv(output, paste0("../results/", stream, "/results_gender_age.csv"),row.names = F)
+write.csv(output, "data/processed/1-demographics/demographics_filtered.csv", row.names = F)

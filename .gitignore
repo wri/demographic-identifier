@@ -17,8 +17,9 @@ weights.28-3.73.hdf5
 *.dat
 *.jpeg
 *.bmp
-*.RDS
 *.DS_Store
+data/raw/*
+data/processed/old/*
 *.h5
 .DS_Store
 **/._.DS_Store
