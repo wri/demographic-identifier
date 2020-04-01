@@ -1,5 +1,8 @@
 # demographic-identifier
-Python toolkit to identify the gender, age and race of individual profiles on Twitter with computer vision and analyze demographic-level differences in topic discussions.
+Python toolkit to identify the gender, age and race of individual profiles on Twitter with computer vision and analyze demographic-level differences in topic discussions. Published in the [Journal of Computational social science](https://link.springer.com/epdf/10.1007/s42001-019-00061-9?author_access_token=N086UDmKbZCQAz0Rwp5lzPe4RwlQNchNByi7wbcMAY6ia9rB1p_xYDiVJWEeB2C6pyTg0gjFVW8sxyW02Dt1HvKTCA2K-nBbh5GwRRuC_WgfZp5zWJP8FI9okcSADHhkbALh2f2XqonahVSImR1jEg%3D%3D).
+
+# Citation
+Brandt, J., Buckingham, K., Buntain, C., Anderson, W., Ray, S., Pool, J.R., Ferrari, N. 2020. Identifying social media user demographics and topic diversity with computational social science: a case study of a major international policy forum; Journal of Computational Social Science; https://doi.org/10.1007/s42001-019-00061-9  
 
 ## Examples
 ![Overview of approach](https://raw.githubusercontent.com/wri/demographic-identifier/master/img/use-2.png)
